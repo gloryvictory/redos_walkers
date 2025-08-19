@@ -17,13 +17,13 @@ $ dnf install gcc
 $ dnf install libxml2, xml2-config, libxml2-devel  
 $ dnf install gdal, gdal-devel  
 $ dnf install boost, boost-devel
-$ mkdir /data1/pgdata/15/data
-$ chown -R postgres.postgres /data1/pgdata
+$ mkdir /data/pgdata/15/data
+$ chown -R postgres.postgres /data/pgdata
 $ systemctl edit postgresql-15.service 
 
 ```
 [Service]
-Environment=PGDATA=/data1/pgdata/15/data
+Environment=PGDATA=/data/pgdata/15/data
 ```
 
 $ postgresql-15-setup initdb
@@ -31,7 +31,7 @@ $ systemctl enable postgresql-15.service --now
 $ systemctl status postgresql-15.service
 $ su - postgres
 $ psql
-$ ALTER USER postgres WITH ENCRYPTED PASSWORD 'postgres123';
+$ ALTER USER postgres WITH ENCRYPTED PASSWORD 'postgres';
 $ systemctl restart postgresql-15.service
 $ yum remove minizip
 $ yum install postgis-pgsql15
@@ -132,5 +132,55 @@ pg_hba.conf
 
 ```
 host    all             all             all                     scram-sha-256
+
+```
+
+
+
+backup.sh
+
+```
+PGPASSWORD=postgres
+export PGPASSWORD
+dir1=/backup/`date +"%Y"`/
+if [ ! -d $dir1 ]
+then
+mkdir $dir1
+fi
+dir2=/backup/`date +"%Y"`/`date +"%m"`/
+if [ ! -d $dir2 ]
+then
+mkdir $dir2
+fi
+dir3=/backup/`date +"%Y"`/`date +"%m"`/`date +"%d"`/
+if [ ! -d $dir3 ]
+then
+mkdir $dir3
+fi
+
+echo "Backup postgres" $2>> $dir3/log.txt
+pg_dump --username "postgres" --role "postgres" --no-password -d postgres --format custom -Z 9 --blobs --section pre-data --section data --section post-data --encoding UTF8 --verbose > /backup/`date +"%Y"`/`date +"%m"`/`date +"%d"`/postgres.compressed 2>> $dir3/log.txt
+echo "Backup test" $2>> $dir3/log.txt
+pg_dump --username "postgres" --role "postgres" --no-password -d test --format custom -Z 9 --blobs --section pre-data --section data --section post-data --encoding UTF8 --verbose > /backup/`date +"%Y"`/`date +"%m"`/`date +"%d"`/test.compressed 2>> $dir3/log.txt
+echo "Backup admin" $2>> $dir3/log.txt
+
+```
+
+
+backup_del.sh
+
+```
+date $2>>/backup/del.log
+find /backup/ -maxdepth 4 -type f -mtime +60 -name '*.compressed' -exec echo {} \; -exec rm {} \; 2>> /backup/del.log
+find /backup/ -maxdepth 4 -type f -mtime +60 -name 'log.txt' -exec echo {} \; -exec rm {} \;  $2>> /backup/del.log
+```
+
+backup_clear_log.sh
+
+```
+date $2>> /backup/clear_log.log
+find /pgdata/15/data/log -maxdepth 1 -type f -mtime +21 -name '*.log' -exec echo {} \; -exec tar -rvf /pgdata/15/data/log/backup/backup_`date +%Y_%m_%d`.tar {} \; -exec rm {} \; 2>> /backup/clear_log.log
+find /pgdata/15/data/log -maxdepth 1 -type f -mtime +21 -name '*.csv' -exec echo {} \; -exec tar -rvf /pgdata/15/data/log/backup/backup_`date +%Y_%m_%d`.tar {} \; -exec rm {} \; 2>> /backup/clear_log.log
+find /pgdata/15/data/log/backup -maxdepth 1 -type f -mtime +60 -name '*.tar' -exec echo {} \; -exec rm {} \; 2>> /backup/clear_log.log
 
 ```
