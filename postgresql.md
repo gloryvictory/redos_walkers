@@ -30,8 +30,8 @@ $ postgresql-15-setup initdb
 $ systemctl enable postgresql-15.service --now
 $ systemctl status postgresql-15.service
 $ su - postgres
-$$ psql
-$$ ALTER USER postgres WITH ENCRYPTED PASSWORD 'postgres123';
+$ psql
+$ ALTER USER postgres WITH ENCRYPTED PASSWORD 'postgres123';
 $ systemctl restart postgresql-15.service
 $ yum remove minizip
 $ yum install postgis-pgsql15
