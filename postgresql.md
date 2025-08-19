@@ -96,3 +96,41 @@ CREATE EXTENSION IF NOT EXISTS h3_postgis SCHEMA public;
 $ su - postgres
 $ pg_restore -d postgres -v postgres_backup.compressed
 
+
+
+postgresql.conf
+
+```
+
+listen_addresses = '*'          # what IP address(es) to listen on;
+log_destination = 'csvlog' 
+
+logging_collector = on          # Enable capturing of stderr, jsonlog,
+log_file_mode = 0640                    # creation mode for log files,
+log_line_prefix='%t:%r:%u@%d:[%p]:%c:%e:%v:%x '
+log_timezone = 'Asia/Yekaterinburg'
+datestyle = 'iso, dmy'
+timezone = 'Asia/Yekaterinburg'
+
+
+lc_messages = 'ru_RU.UTF-8'
+lc_monetary = 'ru_RU.UTF-8'
+lc_numeric = 'ru_RU.UTF-8'
+lc_time = 'ru_RU.UTF-8'
+
+
+#lc_messages = 'Russian_Russia.1251'                    # locale for system error message
+#lc_monetary = 'Russian_Russia.1251'                    # locale for monetary formatting
+#lc_numeric = 'Russian_Russia.1251'                     # locale for number formatting
+#lc_time = 'Russian_Russia.1251'                                # locale for time formatting
+
+# default configuration for text search
+default_text_search_config = 'pg_catalog.russian'
+```
+
+pg_hba.conf
+
+```
+host    all             all             all                     scram-sha-256
+
+```
