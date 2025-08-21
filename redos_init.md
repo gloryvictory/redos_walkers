@@ -7,3 +7,4 @@ $ sudo dnf install wget
 $ ss -tunelp | grep uid:`id -u postgres`
 $ netstat -nlpt
 $ sudo systemctl list-units --type=service
+$ dnf list installed 
