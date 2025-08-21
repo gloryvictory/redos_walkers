@@ -1,3 +1,5 @@
+#https://rabrain.ru/special/handbook/sql/справочный-гайд-по-командам-postgresql/
+
 $ dnf check-update
 $ sudo dnf update & sudo dnf  upgrade --skip-broken
 $ sudo dnf upgrade --skip-broken
