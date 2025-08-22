@@ -142,6 +142,7 @@ host    all             all             all                     scram-sha-256
 backup.sh
 
 ```
+#!/bin/bash
 PGPASSWORD=postgres
 export PGPASSWORD
 dir1=/backup/`date +"%Y"`/
@@ -172,6 +173,7 @@ echo "Backup admin" $2>> $dir3/log.txt
 backup_del.sh
 
 ```
+#!/bin/bash
 date $2>>/backup/del.log
 find /backup/ -maxdepth 4 -type f -mtime +60 -name '*.compressed' -exec echo {} \; -exec rm {} \; 2>> /backup/del.log
 find /backup/ -maxdepth 4 -type f -mtime +60 -name 'log.txt' -exec echo {} \; -exec rm {} \;  $2>> /backup/del.log
@@ -180,6 +182,7 @@ find /backup/ -maxdepth 4 -type f -mtime +60 -name 'log.txt' -exec echo {} \; -e
 backup_clear_log.sh
 
 ```
+#!/bin/bash
 date $2>> /backup/clear_log.log
 find /pgdata/15/data/log -maxdepth 1 -type f -mtime +21 -name '*.log' -exec echo {} \; -exec tar -rvf /pgdata/15/data/log/backup/backup_`date +%Y_%m_%d`.tar {} \; -exec rm {} \; 2>> /backup/clear_log.log
 find /pgdata/15/data/log -maxdepth 1 -type f -mtime +21 -name '*.csv' -exec echo {} \; -exec tar -rvf /pgdata/15/data/log/backup/backup_`date +%Y_%m_%d`.tar {} \; -exec rm {} \; 2>> /backup/clear_log.log
