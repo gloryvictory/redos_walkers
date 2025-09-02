@@ -1,18 +1,18 @@
-$ sudo dnf install -y nginx
-$ sudo systemctl enable nginx
-$ sudo systemctl start nginx
-$ sudo systemctl status nginx
+$ sudo dnf install -y nginx   
+$ sudo systemctl enable nginx  
+$ sudo systemctl start nginx  
+$ sudo systemctl status nginx  
 
-# Скопировать сертификаты 
+# Скопировать сертификаты   
 
-$ cp /install/ssh/novatek.crt /etc/nginx/certs/novatek.crt
-$ cp /install/ssh/novatek.key /etc/nginx/certs/novatek.key
-$ sudo chown -R root:root /etc/nginx
+$ cp /install/ssh/mysite.crt /etc/nginx/certs/mysite.crt  
+$ cp /install/ssh/mysite.key /etc/nginx/certs/mysite.key  
+$ sudo chown -R root:root /etc/nginx  
 
-$ sudo nano /etc/nginx/nginx.conf
+$ sudo nano /etc/nginx/nginx.conf  
 или
-# Вставляем в файлик если для геосервера
-$ sudo nano /etc/nginx/conf.d/mysite.conf
+# Вставляем в файлик если для геосервера  
+$ sudo nano /etc/nginx/conf.d/mysite.conf  
 
 ```
 
@@ -24,13 +24,13 @@ map $http_upgrade $connection_upgrade {
 server {
     listen 80;
     access_log off;
-    server_name tmn-nst-test-cache.tm.novatek.int;
+    server_name mysite;
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl;
-    server_name tmn-nst-test-cache.tm.novatek.int;
+    server_namemysite;
 
     ssl_protocols               TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
     ssl_session_cache           shared:SSL:20m;
