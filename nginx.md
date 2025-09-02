@@ -66,6 +66,6 @@ server {
 ```
 
 
-$ sudo systemctl restart nginx
-$ sudo systemctl status nginx
-$ sudo journalctl -xeu nginx.service
+$ sudo systemctl restart nginx  
+$ sudo systemctl status nginx  
+$ sudo journalctl -xeu nginx.service  
