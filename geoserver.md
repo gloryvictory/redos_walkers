@@ -149,41 +149,20 @@ $ sudo nano /opt/geoserver/webapps/geoserver/WEB-INF/web.xml
 
 [http://myserver:8080](http://myserver:8080/)
   
-[http://myserver:8080](http://myserver:8080/)[/geoserver/web](http://tmn-nst-cache.tm.myserver.int:8080/geoserver/web)  
+[http://myserver:8080](http://myserver:8080/)[/geoserver/web](http://myserver:8080/geoserver/web)  
   
 Для доступа используются login|password по умолчанию (**admin|geoserver**)  
   
 Изменяем мастер-пароль по-дефолту на **geoserver2**  
 Изменяем админ-пароль по-дефолту на **geoserver2**  
   
-# Настройка геосетки для работы с Кэшсервисом [](https://tmn-dev-com/youtrack/articles/GIS-A-54/myserver#%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0-%D0%B3%D0%B5%D0%BE%D1%81%D0%B5%D1%82%D0%BA%D0%B8-%D0%B4%D0%BB%D1%8F-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%8B-%D1%81-%D0%BA%D1%8D%D1%88%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BE%D0%BC)  
+# Настройка геосетки для работы с Кэшсервисом
   
-1. Перейдите по пути [http://tmn-nst-geosrv.tm.myserver.int:8080/geoserver/web](http://tmn-nst-geosrv.tm.myserver.int:8080/geoserver/web) и авторизуйтесь в панели администратора  
+1. Перейдите по пути [http://myserver:8080/geoserver/web](http://myserver:8080/geoserver/web) и авторизуйтесь в панели администратора  
 2. Перейдите в пункт «**Настройки GeoWebCache**»  
 3. В выпадающем списке «**Добавить геосетку по умолчанию**» выбрать пункт «**WebMercatorQuad**» и нажать пиктограмму «**+**»  
 4. Убедится, что геосетка добавленная в таблицу  
 5. Сохранить изменения используя кнопки «Применить» или «Сохранить»  
-  
-# Установка Zabbix-client  
-  
-$ sudo dnf list |grep zabbix  
-  
-$ sudo dnf install zabbix-agent2  
-  
-$ sudo nano /etc/zabbix/zabbix_agent2.conf  
-  
-для тогог что бы ваш сервер опрашивался системой мониторинга необходимо установить Zabbix-agent2 на вашем сервере и изменить строчку Server=10.72.53.0/24 в конфиг файле zabbix_agentd.conf/zabbix_agent2.conf.  
-  
-$ systemctl list-unit-files | grep enabled  
-$ sudo systemctl enable zabbix-agent2.service  
-$ systemctl list-unit-files | grep enabled  
-$ sudo systemctl start zabbix-agent2.service  
-  
-INSERT INTO public."Layers"  
-  
-("MapId", "Name", "Url", "Type", "IsActive", "IsExpanded", "DefaultOpacity", "LayerOrder", "IsBaseMap", "IsDeleted", "IsSnappable", "IsUnsearchable", "GroupLayer", "IsReestr", "IsService")  
-  
-VALUES(1, 'snimki4', '[http://tmn-nst-cache.tm.myserver.int/geoserver/snimki4/ows](http://tmn-nst-cache.tm.myserver.int/geoserver/snimki4/ows)', 'geoserver-cache', false, false, 0, 40, false, false, false, true, 'snimki4:parent', false, false);  
   
 # Перенос data_dir в отдельную директорию /data2   
   
@@ -229,13 +208,13 @@ $ sudo nano /opt/geoserver/webapps/geoserver/WEB-INF/web.xml
   
 $  
   
-## **Изменение пути к кэшу GWC** [](https://tmn-dev-com/youtrack/articles/GIS-A-54/myserver#%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D1%83%D1%82%D0%B8-%D0%BA-%D0%BA%D1%8D%D1%88%D1%83-gwc)  
+## **Изменение пути к кэшу GWC**
   
 $ cd /data1  
 $ sudo mkdir -p /data1/geoserver/gwc  
-$ sudo chown -R my-user:my-user /data1  
+$ sudo chown -R my-user:my-user /data  
 $ sudo nano /etc/profile  
-$ export GEOWEBCACHE_CACHE_DIR=/data1/geoserver/gwc  
+$ export GEOWEBCACHE_CACHE_DIR=/data/geoserver/gwc  
   
 $ sudo nano /opt/geoserver/webapps/geoserver/WEB-INF/web.xml  
   
@@ -254,7 +233,7 @@ $ sudo reboot now
   
 $ echo $GEOWEBCACHE_CACHE_DIR  
   
-# Установка шрифтов [](https://tmn-dev-com/youtrack/articles/GIS-A-54/myserver#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D1%88%D1%80%D0%B8%D1%84%D1%82%D0%BE%D0%B2)  
+# Установка шрифтов 
   
 1. Копируем шрифты в /usr/share/fonts/[своя папка]  
 2. Обновляем кэш шрифтов: sudo fc-cache -f -v  
