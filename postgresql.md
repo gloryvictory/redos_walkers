@@ -31,6 +31,66 @@ Environment=PGDATA=/data/pgdata/15/data
 $ sudo postgresql-15-setup initdb  
 $ systemctl enable postgresql-15.service --now  
 $ systemctl status postgresql-15.service  
+
+pg_hba.conf
+
+```
+local   all             all                                     peer
+host    all             all             127.0.0.1/32            scram-sha-256
+host    all             all             ::1/128                 scram-sha-256
+host    all             all             all                     scram-sha-256x
+local   replication     all                                     peer
+host    replication     all             127.0.0.1/32            scram-sha-256
+host    replication     all             ::1/128                 scram-sha-256
+
+```
+
+postgresql.conf
+```
+
+
+listen_addresses = '*'
+#port = 5432
+max_connections = 200
+superuser_reserved_connections = 2
+
+shared_buffers = 512MB
+work_mem = 2MB
+maintenance_work_mem = 102MB
+dynamic_shared_memory_type = posix
+effective_io_concurrency = 300
+
+max_worker_processes = 8
+max_parallel_workers_per_gather = 2
+max_parallel_workers = 2
+wal_buffers = -1
+checkpoint_completion_target = 0.9
+max_wal_size = 3GB
+min_wal_size = 2GB
+random_page_cost = 1.1
+effective_cache_size = 2GB
+
+log_destination = 'csvlog'
+logging_collector = on
+log_directory = 'log'
+#log_filename = 'postgresql-%a.log'
+log_rotation_age = 1d
+log_rotation_size = 0
+log_truncate_on_rotation = on
+log_line_prefix = '%t:%r:%u@%d:[%p]:%c:%e:%v:%x  '
+log_timezone = 'Asia/Yekaterinburg'
+
+datestyle = 'iso, dmy'
+timezone = 'Asia/Yekaterinburg'
+
+lc_messages = 'ru_RU.UTF-8'
+lc_monetary = 'ru_RU.UTF-8'
+lc_numeric = 'ru_RU.UTF-8'
+lc_time = 'ru_RU.UTF-8'
+
+default_text_search_config = 'pg_catalog.russian'
+```
+
 $ su - postgres  
 $ psql  
 $ ALTER USER postgres WITH ENCRYPTED PASSWORD 'postgres';  
