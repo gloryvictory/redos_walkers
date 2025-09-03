@@ -1,52 +1,52 @@
 #https://rabrain.ru/special/handbook/sql/справочный-гайд-по-командам-postgresql/
 
-$ dnf check-update
-$ sudo dnf update & sudo dnf  upgrade --skip-broken
-$ sudo dnf upgrade --skip-broken
-$ sudo cat /etc/passwd | grep my-user
-$ sudo useradd my-user
-$ sudo passwd my-user
-Password: my-user123 (for example)
-$ mkdir ~/install
-$ cd ~/install
-$ sudo su -  
-$ dnf install postgresql15-server  
+$ dnf check-update  
+$ sudo dnf update & sudo dnf  upgrade --skip-broken  
+$ sudo dnf upgrade --skip-broken  
+$ sudo cat /etc/passwd | grep my-user  
+$ sudo useradd my-user  
+$ sudo passwd my-user  
+Password: my-user123 (for example)  
+$ mkdir ~/install  
+$ cd ~/install  
+$ sudo su -   
+$ dnf install postgresql15-server   
 $ dnf install postgresql15-contrib  
 $ dnf install postgresql15-devel  
 $ dnf install cmake  
 $ dnf install make  
 $ dnf install gcc  
-$ dnf install libxml2, xml2-config, libxml2-devel  
+$ dnf install libxml2, xml2-config, libxml2-devel    
 $ dnf install gdal, gdal-devel  
-$ dnf install boost, boost-devel
-$ mkdir /data/pgdata/15/data
-$ chown -R postgres.postgres /data/pgdata
-$ systemctl edit postgresql-15.service 
+$ dnf install boost, boost-devel  
+$ mkdir /data/pgdata/15/data  
+$ chown -R postgres.postgres /data/pgdata  
+$ systemctl edit postgresql-15.service  
 
 ```
 [Service]
 Environment=PGDATA=/data/pgdata/15/data
 ```
 
-$ postgresql-15-setup initdb
-$ systemctl enable postgresql-15.service --now
-$ systemctl status postgresql-15.service
-$ su - postgres
-$ psql
-$ ALTER USER postgres WITH ENCRYPTED PASSWORD 'postgres';
-$ systemctl restart postgresql-15.service
-$ yum remove minizip
-$ yum install postgis-pgsql15
-$ su - postgres
-$ psql
-$ CREATE EXTENSION pg_stat_statements;
-$ CREATE EXTENSION postgis;
-$ systemctl stop postgresql-15.service
-$ Подкидываем фалы параметров.
-$ Меняем права этим файлам
-$ chown postgres.postgres pg_hba.conf
-$ chown postgres.postgres postgresql.conf
-$ chown postgres.postgres postgresql.auto.conf
+$ sudo postgresql-15-setup initdb  
+$ systemctl enable postgresql-15.service --now  
+$ systemctl status postgresql-15.service  
+$ su - postgres  
+$ psql  
+$ ALTER USER postgres WITH ENCRYPTED PASSWORD 'postgres';  
+$ systemctl restart postgresql-15.service  
+$ yum remove minizip  
+$ yum install postgis-pgsql15  
+$ su - postgres  
+$ psql  
+$ CREATE EXTENSION pg_stat_statements;  
+$ CREATE EXTENSION postgis;  
+$ systemctl stop postgresql-15.service  
+$ Подкидываем фалы параметров.  
+$ Меняем права этим файлам  
+$ chown postgres.postgres pg_hba.conf  
+$ chown postgres.postgres postgresql.conf  
+$ chown postgres.postgres postgresql.auto.conf  
 
 Меняем в postgresql.conf
 
