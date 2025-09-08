@@ -249,3 +249,68 @@ find /pgdata/15/data/log -maxdepth 1 -type f -mtime +21 -name '*.csv' -exec echo
 find /pgdata/15/data/log/backup -maxdepth 1 -type f -mtime +60 -name '*.tar' -exec echo {} \; -exec rm {} \; 2>> /backup/clear_log.log
 
 ```
+
+
+## Grafana
+
+$ sudo dnf install grafana
+$ sudo dnf install nginx
+
+$ sudo systemctl daemon-reload
+
+$ sudo systemctl enable nginx grafana
+$ sudo systemctl start nginx grafana
+$ sudo systemctl status nginx grafana
+
+$ sudo mkdir /etc/nginx/certs
+$ cp *.cer *.key /etc/nginx/certs
+$ sudo chown -R root:root /etc/nginx
+$ cp /etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/default.bak
+$ sudo nano /etc/nginx/conf.d/grafana.conf
+
+```
+server {
+        listen 80;
+        listen [::]:80;
+        server_name server_name_FQDNN;
+        return 301 https://$server_name$request_uri;
+}
+server{
+        listen 443 ssl;
+        server_name server_name_FQDNN;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+        ssl_session_cache shared:SSL:20m;
+        ssl_session_timeout 15m;
+        ssl_prefer_server_ciphers on;
+        ssl_stapling on;
+
+        ssl_certificate /etc/nginx/certs/my.crt; #Укажите путь до сертификатов
+        ssl_certificate_key /etc/nginx/certs/my.key; #Укажите путь до сертификатов
+
+        proxy_busy_buffers_size 512k;
+        proxy_buffers 4 512k;
+        proxy_buffer_size 512k;
+        large_client_header_buffers 4 512k;
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log;
+        client_max_body_size 0;
+        proxy_read_timeout 300;
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300;
+
+        location / {
+         proxy_pass http://localhost:3000;
+         proxy_set_header Host $host;
+         proxy_set_header X-Real-IP $remote_addr;
+         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         proxy_set_header X-Forwarded-Host $host;
+         proxy_set_header X-Forwarded-Server $host;
+         proxy_set_header X-Forwarded-Port $server_port;
+         proxy_set_header X-Forwarded-Proto $scheme;
+        }
+}
+```
+
+
+$ sudo systemctl restart nginx
+$ sudo systemctl status nginx
