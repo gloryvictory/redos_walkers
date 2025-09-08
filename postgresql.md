@@ -253,20 +253,20 @@ find /pgdata/15/data/log/backup -maxdepth 1 -type f -mtime +60 -name '*.tar' -ex
 
 ## Grafana
 
-$ sudo dnf install grafana
-$ sudo dnf install nginx
+$ sudo dnf install grafana  
+$ sudo dnf install nginx  
 
-$ sudo systemctl daemon-reload
+$ sudo systemctl daemon-reload  
 
-$ sudo systemctl enable nginx grafana
-$ sudo systemctl start nginx grafana
-$ sudo systemctl status nginx grafana
+$ sudo systemctl enable nginx grafana  
+$ sudo systemctl start nginx grafana  
+$ sudo systemctl status nginx grafana  
 
-$ sudo mkdir /etc/nginx/certs
-$ cp *.cer *.key /etc/nginx/certs
-$ sudo chown -R root:root /etc/nginx
-$ cp /etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/default.bak
-$ sudo nano /etc/nginx/conf.d/grafana.conf
+$ sudo mkdir /etc/nginx/certs  
+$ cp *.cer *.key /etc/nginx/certs  
+$ sudo chown -R root:root /etc/nginx  
+$ cp /etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/default.bak  
+$ sudo nano /etc/nginx/conf.d/grafana.conf  
 
 ```
 server {
@@ -312,5 +312,5 @@ server{
 ```
 
 
-$ sudo systemctl restart nginx
-$ sudo systemctl status nginx
+$ sudo systemctl restart nginx  
+$ sudo systemctl status nginx  
