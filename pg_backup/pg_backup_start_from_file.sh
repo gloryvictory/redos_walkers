@@ -8,7 +8,7 @@ PGPASSWORD="postgrespwd"
 export PGPASSWORD
 
 # Путь к файлу со списком баз
-DB_LIST_FILE="/etc/postgresql/backup_databases.txt"
+DB_LIST_FILE="backup_databases.txt"
 
 # Путь для бэкапов
 BASE_DIR="/data2/backup"
