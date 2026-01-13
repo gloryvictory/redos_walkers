@@ -1,0 +1,4 @@
+date $2>> /data2/pg_backup/clear_log.log
+find /pgdata/15/data/log -maxdepth 1 -type f -mtime +21 -name '*.log' -exec echo {} \; -exec tar -rvf /pgdata/15/data/log/backup/backup_`date +%Y_%m_%d`.tar {} \; -exec rm {} \; 2>> /data1/backup/clear_log.log
+find /pgdata/15/data/log -maxdepth 1 -type f -mtime +21 -name '*.csv' -exec echo {} \; -exec tar -rvf /pgdata/15/data/log/backup/backup_`date +%Y_%m_%d`.tar {} \; -exec rm {} \; 2>> /data1/backup/clear_log.log
+find /pgdata/15/data/log/backup -maxdepth 1 -type f -mtime +60 -name '*.tar' -exec echo {} \; -exec rm {} \; 2>> /data1/backup/clear_log.log
