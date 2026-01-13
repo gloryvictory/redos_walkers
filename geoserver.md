@@ -199,12 +199,9 @@ $ sudo nano /opt/geoserver/webapps/geoserver/WEB-INF/web.xml
 Поправить вот так:  
   
 <context-param>  
-  
-       <param-name>GEOSERVER_DATA_DIR</param-name>  
-  
-        <param-value>$GEOSERVER_DATA_DIR</param-value>  
-  
-    </context-param>  
+  <param-name>GEOSERVER_DATA_DIR</param-name>  
+  <param-value>$GEOSERVER_DATA_DIR</param-value>
+</context-param>  
   
 $  
   
@@ -353,3 +350,188 @@ $
   
 login: admin  
 password: geoserver      
+
+
+# Настройка геосетки для работы с Кэшсервисом 
+
+1. Перейдите по пути [https://myserver/geoserver/](https://myserver/geoserver/web/?0)   и авторизуйтесь в панели администратора
+2. Перейдите в пункт «**Настройки GeoWebCache**»
+3. В выпадающем списке «**Добавить геосетку по умолчанию**» выбрать пункт «**WebMercatorQuad**» и нажать пиктограмму «**+**»
+4. Убедится, что геосетка добавленная в таблицу
+5. Сохранить изменения используя кнопки «Применить» или «Сохранить»
+
+
+# Перенос data_dir в отдельную директорию /data2 
+
+### Вариант 1
+$ sudo systemctl stop geoserver.service
+$ sudo chown -R my-user:my-user /data2
+$ sudo mkdir /data2/geoserver
+$ sudo mv -f /opt/geoserver/data_dir/ /data2/geoserver/  
+$ sudo chown -R my-user:my-user /data2
+$ cd /opt/geoserver/
+$ sudo ln -s /data2/geoserver/data_dir/ /opt/geoserver/data_dir
+
+
+$GEOSERVER_DATA_DIR
+
+$ sudo nano /etc/profile
+$ export GEOSERVER_DATA_DIR=/data2/geoserver/data_dir
+$ sudo reboot now
+$ echo $GEOSERVER_DATA_DIR
+$ sudo nano /opt/geoserver/webapps/geoserver/WEB-INF/web.xml
+
+Раскомментировать и поправить
+```
+<!--
+    <context-param>
+       <param-name>GEOSERVER_DATA_DIR</param-name>
+        <param-value>C:\eclipse\workspace\geoserver_trunk\cite\confCiteWFSPostGIS</param-value>
+    </context-param>
+   -->
+```
+
+Поправить вот так:
+```
+<context-param>
+  <param-name>GEOSERVER_DATA_DIR</param-name>
+  <param-value>$GEOSERVER_DATA_DIR</param-value>
+</context-param>
+```
+
+
+### Вариант 2 
+
+$ sudo systemctl stop geoserver.service
+**Создаем директорию**
+$ sudo mkdir /data1/data_dir
+
+**Переносим данные из data_dir геосервера в созданную директорию**
+$ sudo cp -r /opt/geoserver/data_dir/* /data1/data_dir/
+
+$ $ sudo chown -R my-user:my-user /data2 
+
+**Переназначаем директорию для геосервера**
+$ sudo nano /opt/geoserver/bin/startup.sh
+
+**в блоке** **#Find the configuration directory: GEOSERVER_DATA_DIR**
+**меняем путь до data_dir**
+
+**Вместо**
+```
+if [ -z "${GEOSERVER_DATA_DIR:-}" ]; then
+    if [ -r "${GEOSERVER_HOME}/data_dir" ]; then
+        export GEOSERVER_DATA_DIR="${GEOSERVER_HOME}/data_dir"
+    else
+        echo "No GEOSERVER_DATA_DIR found, using application defaults"
+              GEOSERVER_DATA_DIR=""
+    fi
+fi
+```
+
+
+**Ставим**
+```
+if [ -z "${GEOSERVER_DATA_DIR:-}" ]; then
+    if [ -r "/data1/data_dir" ]; then
+        export GEOSERVER_DATA_DIR="/data1/data_dir"
+    else
+        echo "No GEOSERVER_DATA_DIR found, using application defaults"
+              GEOSERVER_DATA_DIR=""
+    fi
+fi
+```
+
+$ sudo nano /opt/geoserver/webapps/geoserver/WEB-INF/web.xml
+
+Раскомментировать и поправить
+```
+<!--
+    <context-param>
+       <param-name>GEOSERVER_DATA_DIR</param-name>
+        <param-value>C:\eclipse\workspace\geoserver_trunk\cite\confCiteWFSPostGIS</param-value>
+    </context-param>
+   -->
+```
+
+Поправить вот так:
+```
+<context-param>
+  <param-name>GEOSERVER_DATA_DIR</param-name>
+  <param-value>$GEOSERVER_DATA_DIR</param-value>
+</context-param>
+```
+
+
+
+**Перезапускаем геосервер**
+
+$ sudo systemctl restart geoserver
+
+**переходим в ui во вкладку "состояние сервера"**
+в поле "каталог данных", должна быть директория, которую создавали
+
+
+## **Изменение пути к кэшу GWC**
+
+$ cd /data1
+$ sudo mkdir -p /data1/geoserver/gwc
+$ sudo chown -R my-user:my-user /data1
+$ sudo nano /etc/profile
+$ export GEOWEBCACHE_CACHE_DIR=/data1/geoserver/gwc
+
+$ sudo nano /opt/geoserver/webapps/geoserver/WEB-INF/web.xml
+
+Редактируем файл ./geoserver/webapps/geoserver/WEB-INF/web.xml:
+
+```xml
+...
+<context-param>
+   <param-name>GEOWEBCACHE_CACHE_DIR</param-name>
+   <param-value>$GEOWEBCACHE_CACHE_DIR</param-value>
+</context-param>
+```
+
+
+$ sudo reboot now
+
+$ echo $GEOWEBCACHE_CACHE_DIR
+
+### Настройка blob-хранилищ для встроенного GeoWebCache 
+
+Геосервер-Blob-хранилище
+"**Добавить новое**"
+указываем: 
+Тип: "**MBTiles BlobStore**"
+Root Directory : **/data1/geoserver/mbtiles или /data1/geoserver/gwc**
+MBTiles Metadata Directory: **/data1/geoserver/mbtiles**
+
+
+
+login:
+
+# Настройка прокси через nginx 
+
+Редактируем файл ./geoserver/webapps/geoserver/WEB-INF/web.xml:
+
+$ sudo nano /opt/geoserver/webapps/geoserver/WEB-INF/web.xml
+
+Добавьте этот параметр ниже <context-param>
+
+```
+<context-param>
+        <param-name>PROXY_BASE_URL</param-name>
+    <param-value>https://tmn-nst-test-geosrv.tm.novatek.int/geoserver</param-value>
+</context-param>
+
+<context-param>
+        <param-name>GEOSERVER_CSRF_WHITELIST</param-name>
+        <param-value>tmn-nst-test-geosrv.tm.novatek.int</param-value>
+</context-param>
+```
+
+Перезагружаем Geoserver
+3. sudo systemctl restart geoserver.service
+4. sudo systemctl status --now geoserver.service
+
+
