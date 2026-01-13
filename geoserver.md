@@ -69,6 +69,8 @@ Type=simple
 User=my-user
 Group=my-user
 Environment="GEOSERVER_HOME=/opt/geoserver"
+Environment="GEOSERVER_DATA_DIR=/data2/geoserver/data_dir"
+Environment="GEOWEBCACHE_CACHE_DIR=/data2/geoserver/gwc"
 ExecStart=/opt/geoserver/bin/startup.sh
 ExecStop=/opt/geoserver/bin/shutdown.sh
 
@@ -80,6 +82,7 @@ WantedBy=multi-user.target
 $ sudo systemctl daemon-reload    
 $ sudo systemctl enable --now geoserver.service    
 $ sudo systemctl status geoserver.service  
+$ sudo journalctl -xeu geoserver.service
   
 ● geoserver.service  
   
